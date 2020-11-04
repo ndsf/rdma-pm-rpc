@@ -1,0 +1,13 @@
+// /home/zhangrongrong/.local/brpc-env/protobuf-4.0.x/bin/protoc --cpp_out=. ./rpc_meta.proto
+
+syntax = "proto3";
+
+package rdmarpc;
+
+option cc_generic_services = true;
+
+message RpcMeta {
+  bytes service_name = 1;
+  bytes method_name = 2;
+  uint64 data_size = 3;
+}
