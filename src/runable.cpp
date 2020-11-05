@@ -2,15 +2,18 @@
 // Created by rrzhang on 2020/11/4.
 //
 
-#include "runable.h"
+#include <thread>
 #include "server.h"
+
+#include "runable.h"
 
 namespace rdmarpc{
     Runnable::Runnable(){}
     void Runnable::operator()() {
         requestBuffer_.reset(new infinity::memory::Buffer(context_.get(), 16384 * 2));
         context_->postReceiveBuffer(requestBuffer_.get());
-        while (!server_->shutdown_) {
+        while (!server_->Shutdown()) {
+            // 循环接收 client 的请求
             infinity::core::receive_element_t receiveElement;
             while (!context_->receive(&receiveElement));
             size_t meta_len = *(size_t*)receiveElement.buffer->getData();
@@ -20,59 +23,40 @@ namespace rdmarpc{
 
             std::string request_str = std::string ((char*)receiveElement.buffer->getData() + sizeof(size_t) + meta_len, meta.data_size());
 
-            dispatch_msg(
-                    meta.service_name(),
-                    meta.method_name(),
-//                        std::move(request_str),
-                    request_str);
 
+            // 接收完消息后
+            auto service = server_->services_[meta.service_name()].service;
+            auto md = server_->services_[meta.service_name()].mds[meta.method_name()];
+
+            // recv_msg 可以再 CallMethod 后立即删除
+            auto recv_msg = service->GetRequestPrototype(md).New();
+            recv_msg->ParseFromString(request_str);
+
+            // resp_msg 和 controller 在回调函数 done->run() 中删除
+            auto resp_msg = service->GetResponsePrototype(md).New();
+            Controller *controller = new Controller();
+
+            OnCallDone *done = new OnCallDone(resp_msg, controller);
+            done->runnable_ = this;
+            service->CallMethod(md, controller, recv_msg, resp_msg, done);
+            delete recv_msg;
+
+            // 最后把 requestBuffer_ 放到 qp
             context_->postReceiveBuffer(requestBuffer_.get());
         }
     }
 
-    void Runnable::dispatch_msg(
-            const std::string &service_name,
-            const std::string &method_name,
-            const std::string &serialzied_data) {
-        auto service = server_->_services[service_name].service;
-        auto md = server_->_services[service_name].mds[method_name];
-
-        std::cout << "recv service_name:" << service_name << std::endl;
-        std::cout << "recv method_name:" << method_name << std::endl;
-        std::cout << "recv type:" << md->input_type()->name() << std::endl;
-        std::cout << "resp type:" << md->output_type()->name() << std::endl;
-
-        auto recv_msg = service->GetRequestPrototype(md).New();
-        recv_msg->ParseFromString(serialzied_data);
-        auto resp_msg = service->GetResponsePrototype(md).New();
-
-        Controller controller;
-        DonePara * para = new DonePara(recv_msg, resp_msg);
-        auto done = ::google::protobuf::NewCallback(
-                this,
-                &Runnable::on_resp_msg_filled,
-                *para);
-        service->CallMethod(md, &controller, recv_msg, resp_msg, done);
-    }
-
-    void Runnable::on_resp_msg_filled(DonePara para) {
+    void OnCallDone::Run() {
+        // google::protobuf::Closure 会自动调用该类的析构函数
+//        std::unique_ptr<OnCallDone> self_guard(this);
         std::string resp_str;
-        pack_message(para.resp_msg_, &resp_str);
+        size_t serialized_size = resp_msg_->ByteSizeLong();
+        resp_str.assign((const char *) &serialized_size, sizeof(serialized_size));
+        resp_msg_->AppendToString(&resp_str);
 
-        std::unique_ptr<infinity::memory::Buffer> responseBuffer = std::make_unique<infinity::memory::Buffer>
-                (context_.get(), (void*)(resp_str.data()), resp_str.size());
+        auto responseBuffer = std::make_unique<infinity::memory::Buffer>(runnable_->context_.get(), (void*)(resp_str.data()), resp_str.size());
         assert(resp_str.size() <= 16384 *2);
-        qp_->send(responseBuffer.get(), context_->defaultRequestToken);
-        context_->defaultRequestToken->waitUntilCompleted();
-    }
-
-    void Runnable::pack_message(
-            const ::google::protobuf::Message *msg,
-            std::string *serialized_data) {
-        size_t serialized_size = msg->ByteSizeLong();
-        serialized_data->assign(
-                (const char *) &serialized_size,
-                sizeof(serialized_size));
-        msg->AppendToString(serialized_data);
+        runnable_->qp_->send(responseBuffer.get(), runnable_->context_->defaultRequestToken);
+        runnable_->context_->defaultRequestToken->waitUntilCompleted();
     }
 }

@@ -12,18 +12,18 @@ public:
                        const ::echo::EchoRequest* request,
                        ::echo::EchoResponse* response,
                        ::google::protobuf::Closure* done) {
-      std::cout << request->msg() << std::endl;
+//      std::cout << request->msg() << std::endl;
       response->set_msg(
               std::string("I have received '") + request->msg() + std::string("'"));
       done->Run();
   }
-};//MyEchoService
+}; //MyEchoService
 
 int main() {
     rdmarpc::Server my_server;
     MyEchoService echo_service;
-    my_server.add(&echo_service);
-    my_server.start("127.0.0.1", 6688);
+    my_server.Add(&echo_service);
+    my_server.Start("127.0.0.1", 6688);
 
     return 0;
 }
