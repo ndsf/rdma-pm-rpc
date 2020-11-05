@@ -12,9 +12,7 @@ public:
                        const ::echo::EchoRequest* request,
                        ::echo::EchoResponse* response,
                        ::google::protobuf::Closure* done) {
-//      std::cout << request->msg() << std::endl;
-      response->set_msg(
-              std::string("I have received '") + request->msg() + std::string("'"));
+      response->set_msg(request->msg());
       done->Run();
   }
 }; //MyEchoService

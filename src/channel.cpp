@@ -6,6 +6,7 @@
 #include "channel.h"
 
 #include <infinity/queues/QueuePairFactory.h>
+#include <infinity/memory/RegisteredMemory.h>
 
 #include "../src/proto/rpc_meta.pb.h"
 
@@ -20,13 +21,15 @@ namespace rdmarpc {
         qp_ = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->connectToRemoteHost(ip.data(), port));
         printf("Creating buffers\n");
 
-        bufferSize_ = 16384 * 2;
+        bufferSize_ = 1024;
         respnoseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
         context_->postReceiveBuffer(respnoseBuffer_.get());
-        requestBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
 
-        time = 0;
-        time2 = 0;
+        time_wait_rsponse = 0;
+        time_callmethod = 0;
+        time_send = 0;
+        time_send1 = 0;
+        time_send2 = 0;
     }
 
     void Channel::CallMethod(const ::google::protobuf::MethodDescriptor *method,
@@ -34,8 +37,8 @@ namespace rdmarpc {
             const ::google::protobuf::Message *request,
             ::google::protobuf::Message *response,
             ::google::protobuf::Closure *) {
-        dbx1000::Profiler profiler1;
-        profiler1.Start();
+        dbx1000::Profiler profiler_callmethod;
+        profiler_callmethod.Start();
         // request 原始数据
         std::string request_data = request->SerializeAsString();
 
@@ -51,16 +54,29 @@ namespace rdmarpc {
         meta_data += request_data;
         // 最后发送的格式为 [meta_size][meta_data][request_data], meta_data = [sevice_name, method_name, request_data size]
 
-        // 发送 request
-        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void*)(meta_data.data()), meta_data.size());
-//        memcpy(requestBuffer_->getData(), meta_data.data(), meta_data.size());
-        assert(meta_data.size() <= bufferSize_);
-        qp_->send(requestBuffer.get(), context_->defaultRequestToken);
-//        qp_->send(requestBuffer_.get(), context_->defaultRequestToken);
-        context_->defaultRequestToken->waitUntilCompleted();
 
-        dbx1000::Profiler profiler;
-        profiler.Start();
+        dbx1000::Profiler profiler_send;
+        profiler_send.Start();
+        assert(meta_data.size() <= bufferSize_);
+        dbx1000::Profiler profiler_send2;
+        // 发送 request
+//        {
+            dbx1000::Profiler profiler_send1;
+            profiler_send1.Start();
+            auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void*)(meta_data.data()), meta_data.size());
+            profiler_send1.End();
+            time_send1 += profiler_send1.Micros();
+            profiler_send2.Start();
+            qp_->send(requestBuffer.get(), context_->defaultRequestToken);
+//        }
+        context_->defaultRequestToken->waitUntilCompleted();
+        profiler_send2.End();
+        time_send2 += profiler_send2.Micros();
+        profiler_send.End();
+        time_send += profiler_send.Micros();
+
+        dbx1000::Profiler profiler_wait_rsponse;
+        profiler_wait_rsponse.Start();
         // 等待 server 回复
         // respone 格式为 [response size][response data]
         infinity::core::receive_element_t receiveElement;
@@ -69,13 +85,14 @@ namespace rdmarpc {
         size_t len = *(size_t*)receiveElement.buffer->getData();
         // response data
         response->ParseFromString(std::string((char*)receiveElement.buffer->getData() + sizeof(size_t), len));
-        profiler.End();
+        profiler_wait_rsponse.End();
         context_->postReceiveBuffer(respnoseBuffer_.get());
 
-        time += profiler.Micros();
+        time_wait_rsponse += profiler_wait_rsponse.Micros();
 
-        profiler1.End();
-        time2 += profiler1.Micros();
+        profiler_callmethod.End();
+        time_callmethod += profiler_callmethod.Micros();
     }
+
 
 }

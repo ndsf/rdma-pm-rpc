@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(rdma C CXX)
 
 
+SET(CMAKE_CXX_FLAGS "-O0 -g" CACHE INTERNAL "compiler options" FORCE)
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g" CACHE INTERNAL "compiler options" FORCE)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O0 -g" CACHE INTERNAL "compiler options" FORCE)
 

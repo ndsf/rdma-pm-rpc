@@ -7,14 +7,16 @@
 #include "../src/server.h"
 #include "echo.pb.h"
 #include "profiler.h"
+#include <cstring>
 
-void fun() {
+void fun(int thread) {
+    std::string str(64, 0);
     rdmarpc::Channel channel;
-    channel.init("127.0.0.1", 6688);
+    channel.init("10.11.6.113", 6688);
 
     echo::EchoRequest request;
     echo::EchoResponse response;
-    request.set_msg("hello, myrpc.");
+    request.set_msg(str);
 
     echo::EchoService_Stub stub(&channel);
     rdmarpc::Controller cntl;
@@ -25,17 +27,23 @@ void fun() {
         stub.Echo(&cntl, &request, &response, NULL);
     }
     profiler.End();
-//    std::cout << profiler.Micros() / count << std::endl;
-    std::cout << channel.time / count << std::endl;
-//    std::cout << channel.time2 / count << std::endl;
+
+    if(thread == 2) {
+        std::cout << "total:        " << profiler.Micros() / count << std::endl;
+        std::cout << "callmethod:   " << channel.time_callmethod / count << std::endl;
+        std::cout << "send      :   " << channel.time_send / count << std::endl;
+        std::cout << "send1     :   " << channel.time_send1 / count << std::endl;
+        std::cout << "send2     :   " << channel.time_send2 / count << std::endl;
+        std::cout << "wait_rsponse: " << channel.time_wait_rsponse / count << std::endl;
+    }
 }
 
 int main() {
     std::vector<std::thread> vector_;
-    int thread_count = 20;
+    int thread_count = 15;
     vector_.resize(thread_count);
     for(auto i = 0; i < thread_count; i++) {
-        vector_[i] = std::thread(fun);
+        vector_[i] = std::thread(fun, i);
     }
 
     for(auto i = 0; i < thread_count; i++) {

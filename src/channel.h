@@ -28,11 +28,13 @@ namespace rdmarpc {
         std::unique_ptr<infinity::core::Context> context_;
         std::unique_ptr<infinity::queues::QueuePair> qp_;
         std::unique_ptr<infinity::memory::Buffer> respnoseBuffer_;
-        std::unique_ptr<infinity::memory::Buffer> requestBuffer_;
         size_t bufferSize_;
     public:
-        uint64_t time;
-        uint64_t time2;
+        uint64_t time_wait_rsponse;
+        uint64_t time_callmethod;
+        uint64_t time_send;
+        uint64_t time_send1;
+        uint64_t time_send2;
     }; //mychannel
 
 }
