@@ -8,42 +8,60 @@
 #include <infinity/core/Context.h>
 #include <infinity/queues/QueuePairFactory.h>
 
-#include "runable.h"
-#include "unique_ptr.h"
+#include "runnable.h"
+// #include "unique_ptr.h"
 
-namespace rdmarpc {
-    void Server::Add(::google::protobuf::Service *service) {
+namespace rdmarpc
+{
+    void Server::RegisterService(::google::protobuf::Service *service)
+    {
         ServiceInfo service_info;
         service_info.service = service;
         service_info.sd = service->GetDescriptor();
-        for (int i = 0; i < service_info.sd->method_count(); ++i) {
+        for (int i = 0; i < service_info.sd->method_count(); ++i)
+        {
             service_info.mds[service_info.sd->method(i)->name()] = service_info.sd->method(i);
         }
 
-        services_[service_info.sd->name()] = service_info;
+        _services[service_info.sd->name()] = service_info;
     }
 
-    void Server::Start(const std::string &ip, int port) {
-        shutdown_ = false;
-        auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>();
-        qpFactory->bindToPort(port);
+    void Server::Start(const std::string &ip, int port)
+    {
+        _shutdown = false;
 
-        while(!shutdown_) {
-            printf("Waiting for incoming connection\n");
+        while (!_shutdown)
+        {
             auto context = std::make_unique<infinity::core::Context>();
-            auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(context.get()));
-            std::cout << "connected." << std::endl;
+            auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context.get());
+            // printf("Setting up connection (blocking)\n");
+            qpFactory->bindToPort(port);
+
+            printf("Creating buffers to read from and write to\n");
+            infinity::memory::Buffer *bufferToReadWrite = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
+            infinity::memory::RegionToken *bufferToken = bufferToReadWrite->createRegionToken();
+
+            printf("Creating buffers to receive a message\n");
+            infinity::memory::Buffer *bufferToReceive = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
+            context->postReceiveBuffer(bufferToReceive);
+
+            auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToken, sizeof(infinity::memory::RegionToken)));
 
             Runnable runnable;
             runnable.server_ = this;
-            runnable.context_ = std::move(context);
-            runnable.qp_ = std::move(qp);
+            runnable._context = std::move(context);
+            runnable._qp = std::move(qp);
             std::thread server_th(std::move(runnable));
             server_th.detach();
+            
+            printf("Server_th detached\n");
+//            delete bufferToReadWrite;
+//            delete bufferToReceive; it's detached, can't delete here
         }
     }
 
-    bool Server::Shutdown() const {
-        return this->shutdown_;
+    bool Server::Shutdown() const
+    {
+        return this->_shutdown;
     }
-}
+} // namespace rdmarpc

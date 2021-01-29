@@ -7,6 +7,9 @@
 
 #include "google/protobuf/service.h"
 
+#include <infinity/core/Context.h>
+#include <infinity/queues/QueuePair.h>
+#include <infinity/memory/Buffer.h>
 #include "proto/rpc_meta.pb.h"
 
 
@@ -21,7 +24,7 @@ namespace rdmarpc {
         }; //ServiceInfo
 
     public:
-        void Add(::google::protobuf::Service *service);
+        void RegisterService(::google::protobuf::Service *service);
 
         void Start(const std::string &ip, int port);
 
@@ -29,10 +32,11 @@ namespace rdmarpc {
 
 
         // service_name -> {Service*, ServiceDescriptor*, MethodDescriptor* []}
-        std::map<std::string, ServiceInfo> services_;
+        std::map<std::string, ServiceInfo> _services;
 
     private:
-        bool shutdown_;
+        bool _shutdown;
+        std::unique_ptr<infinity::core::Context> _context;
     }; //Server
 } // rdmarpc
 

@@ -10,33 +10,35 @@
 #include <infinity/core/Context.h>
 #include <infinity/queues/QueuePair.h>
 #include <infinity/memory/Buffer.h>
-#include "unique_ptr.h"
 
-namespace rdmarpc {
+namespace rdmarpc
+{
 
-    class Channel : public ::google::protobuf::RpcChannel {
+    class Channel : public ::google::protobuf::RpcChannel
+    {
     public:
-        void init(const std::string &ip, int port);
+        Channel(const std::string &ip, int port);
 
         void CallMethod(const ::google::protobuf::MethodDescriptor *method,
-                                ::google::protobuf::RpcController * /* controller */,
-                                const ::google::protobuf::Message *request,
-                                ::google::protobuf::Message *response,
-                                ::google::protobuf::Closure *) override;
+                        ::google::protobuf::RpcController * /* controller */,
+                        const ::google::protobuf::Message *request,
+                        ::google::protobuf::Message *response,
+                        ::google::protobuf::Closure *) override;
 
     private:
-        std::unique_ptr<infinity::core::Context> context_;
-        std::unique_ptr<infinity::queues::QueuePair> qp_;
-        std::unique_ptr<infinity::memory::Buffer> respnoseBuffer_;
+        std::unique_ptr<infinity::core::Context> _context;
+        std::unique_ptr<infinity::queues::QueuePair> _qp;
+        std::unique_ptr<infinity::memory::Buffer> _responseBuffer;
         size_t bufferSize_;
+
     public:
         uint64_t time_wait_rsponse;
         uint64_t time_callmethod;
         uint64_t time_send;
         uint64_t time_send1;
         uint64_t time_send2;
-    }; //mychannel
+    };
 
-}
+} // namespace rdmarpc
 
 #endif //RDMARPC_CHANNEL_H

@@ -22,7 +22,6 @@ class QueuePairFactory {
 public:
 
 	QueuePairFactory(infinity::core::Context *context);
-	QueuePairFactory();
 	~QueuePairFactory();
 
 	/**
@@ -34,7 +33,6 @@ public:
 	 * Accept incoming connection request (passive side)
 	 */
 	QueuePair * acceptIncomingConnection(void *userData = NULL, uint32_t userDataSizeInBytes = 0);
-	QueuePair * acceptIncomingConnection(infinity::core::Context *context, void *userData = NULL, uint32_t userDataSizeInBytes = 0);
 
 	/**
 	 * Connect to remote machine (active side)
