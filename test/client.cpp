@@ -33,7 +33,7 @@ int main()
     std::cout << "send      :   " << channel.time_send / count << std::endl;
     std::cout << "send1     :   " << channel.time_send1 / count << std::endl;
     std::cout << "send2     :   " << channel.time_send2 / count << std::endl;
-    std::cout << "wait_rsponse: " << channel.time_wait_rsponse / count << std::endl;
+    std::cout << "wait_response: " << channel.time_wait_rsponse / count << std::endl;
 
     return 0;
 }

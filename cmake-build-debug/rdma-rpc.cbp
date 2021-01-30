@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="rdma-rpc"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server">
+				<Option output="/home/congyong/rdma-pm-rpc/cmake-build-debug/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/congyong/rdma-pm-rpc/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/local/rocksdb/include/"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 server"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="server/fast">
+				<Option output="/home/congyong/rdma-pm-rpc/cmake-build-debug/server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/congyong/rdma-pm-rpc/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/local/rocksdb/include/"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 server/fast"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client">
+				<Option output="/home/congyong/rdma-pm-rpc/cmake-build-debug/client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/congyong/rdma-pm-rpc/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/local/rocksdb/include/"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 client"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client/fast">
+				<Option output="/home/congyong/rdma-pm-rpc/cmake-build-debug/client" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/congyong/rdma-pm-rpc/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/congyong/rdma-pm-rpc/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/local/rocksdb/include/"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/../../../../include/c++/10.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/10.2.0/lib/gcc/x86_64-pc-linux-gnu/10.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 client/fast"/>
+					<CompileFile command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j72 -f &quot;/home/congyong/rdma-pm-rpc/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/channel.cpp">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/channel.h">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/proto/rpc_meta.pb.cc">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/runnable.cpp">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/runnable.h">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/server.cpp">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/src/server.h">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/test/client.cpp">
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/test/proto/echo.pb.cc">
+			<Option target="server"/>
+			<Option target="client"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/test/server.cpp">
+			<Option target="server"/>
+		</Unit>
+		<Unit filename="/home/congyong/rdma-pm-rpc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

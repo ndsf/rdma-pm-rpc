@@ -5,10 +5,10 @@
 class MyEchoService : public echo::EchoService
 {
 public:
-  virtual void Echo(::google::protobuf::RpcController *controller,
+  void Echo(::google::protobuf::RpcController *controller,
                     const ::echo::EchoRequest *request,
                     ::echo::EchoResponse *response,
-                    ::google::protobuf::Closure *done)
+                    ::google::protobuf::Closure *done) override
   {
     std::cout << "server received client msg: " << request->msg() << std::endl;
     response->set_msg("server say: received msg: ***" + request->msg() + std::string("***"));

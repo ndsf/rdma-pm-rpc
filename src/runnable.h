@@ -45,7 +45,7 @@ namespace rdmarpc {
                 ::google::protobuf::Message *resp_msg, Controller *controller)
                 : resp_msg_(resp_msg) , controller_(controller) {}
 
-        ~OnCallDone() {
+        ~OnCallDone() override {
             delete resp_msg_;
             delete controller_;
         }
@@ -54,7 +54,7 @@ namespace rdmarpc {
         ::google::protobuf::Message *resp_msg_;
         Controller *controller_;
 
-        Runnable *runnable_;
+        Runnable *runnable_{};
     };
 }
 

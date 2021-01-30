@@ -1,7 +1,6 @@
 //
 // Created by rrzhang on 2020/11/4.
 //
-#include <iostream>
 #include <thread>
 #include "server.h"
 
@@ -38,11 +37,11 @@ namespace rdmarpc
             qpFactory->bindToPort(port);
 
             printf("Creating buffers to read from and write to\n");
-            infinity::memory::Buffer *bufferToReadWrite = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
+            auto *bufferToReadWrite = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
             infinity::memory::RegionToken *bufferToken = bufferToReadWrite->createRegionToken();
 
             printf("Creating buffers to receive a message\n");
-            infinity::memory::Buffer *bufferToReceive = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
+            auto *bufferToReceive = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
             context->postReceiveBuffer(bufferToReceive);
 
             auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToken, sizeof(infinity::memory::RegionToken)));
