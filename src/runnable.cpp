@@ -28,8 +28,7 @@ namespace rdmarpc
             rdmarpc::RpcMeta meta;
             meta.ParseFromString(std::string((char *)receiveElement.buffer->getData() + sizeof(size_t), meta_len));
 
-            std::string request_str = std::string((char *)receiveElement.buffer->getData() + sizeof(size_t) + meta_len, meta.data_size());
-
+            std::string request_str{(char *)receiveElement.buffer->getData() + sizeof(size_t) + meta_len, meta.data_size()};
             // 接收完消息后
             auto service = server_->_services[meta.service_name()].service;
             auto md = server_->_services[meta.service_name()].mds[meta.method_name()];
@@ -40,9 +39,13 @@ namespace rdmarpc
 
             // resp_msg 和 controller 在回调函数 done->run() 中删除
             auto resp_msg = service->GetResponsePrototype(md).New();
+
             Controller *controller = new Controller();
+            // auto controller = std::unique_ptr<Controller>(new Controller());
 
             OnCallDone *done = new OnCallDone(resp_msg, controller);
+            // auto done = std::unique_ptr<OnCallDone>(new OnCallDone(resp_msg, controller.get()));
+
             done->runnable_ = this;
             service->CallMethod(md, controller, recv_msg, resp_msg, done);
             delete recv_msg;
