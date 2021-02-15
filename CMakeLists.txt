@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(rdma-rpc)
 
-add_definitions("-std=c++14")
+add_definitions("-std=c++20")
 
 find_package(Protobuf REQUIRED)
 include_directories(${Protobuf_INCLUDE_DIRS})

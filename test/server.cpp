@@ -10,8 +10,8 @@ public:
                     ::echo::EchoResponse *response,
                     ::google::protobuf::Closure *done) override
   {
-    std::cout << "server received client msg: " << request->msg() << std::endl;
-    response->set_msg("server say: received msg: ***" + request->msg() + std::string("***"));
+    std::cout << "server received client msg: " << request->msg() << '\n';
+    response->set_msg("server say: received msg: ***" + request->msg() + "***");
     done->Run();
   }
 };

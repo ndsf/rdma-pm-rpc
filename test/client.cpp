@@ -24,16 +24,16 @@ int main()
         // if (controller.Failed())
         //     std::cout << "Request failed: %s" << controller.ErrorText().c_str();
         // else
-        //     std::cout << "Response: " << response.msg() << std::endl;
+        //     std::cout << "Response: " << response.msg() << '\n';
     }
     profiler.End();
 
-    std::cout << "total:        " << profiler.Micros() / count << std::endl;
-    std::cout << "callmethod:   " << channel.time_callmethod / count << std::endl;
-    std::cout << "send      :   " << channel.time_send / count << std::endl;
-    std::cout << "send1     :   " << channel.time_send1 / count << std::endl;
-    std::cout << "send2     :   " << channel.time_send2 / count << std::endl;
-    std::cout << "wait_response: " << channel.time_wait_rsponse / count << std::endl;
+    std::cout << "total:        " << profiler.Micros() / count << '\n';
+    std::cout << "callmethod:   " << channel.time_callmethod / count << '\n';
+    std::cout << "send      :   " << channel.time_send / count << '\n';
+    std::cout << "send1     :   " << channel.time_send1 / count << '\n';
+    std::cout << "send2     :   " << channel.time_send2 / count << '\n';
+    std::cout << "wait_response: " << channel.time_wait_rsponse / count << '\n';
 
     return 0;
 }
