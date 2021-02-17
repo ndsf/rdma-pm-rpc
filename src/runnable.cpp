@@ -14,7 +14,7 @@ namespace rdmarpc
     {
         //requestBuffer_.reset(new infinity::memory::Buffer(_context.get(), 16384 * 2));
         //_context->postReceiveBuffer(requestBuffer_.get());
-        while (!server_->Shutdown())
+        while (true)
         {
             infinity::core::receive_element_t receiveElement;
             while (!_context->receive(&receiveElement))

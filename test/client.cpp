@@ -6,9 +6,7 @@
 
 int main()
 {
-    echo::EchoRequest request;
     echo::EchoResponse response;
-    request.set_msg("Hello World!");
 
     rdmarpc::Channel channel("192.168.98.53", 6688);
     echo::EchoService_Stub stub(&channel);
@@ -19,12 +17,14 @@ int main()
     size_t count = 10;
     for (auto i = 0; i < count; i++)
     {
-        // printf("i = %d\n", i);
+        echo::EchoRequest request;
+        request.set_msg(std::to_string(i));
+
         stub.Echo(&controller, &request, &response, nullptr);
-        // if (controller.Failed())
-        //     std::cout << "Request failed: %s" << controller.ErrorText().c_str();
-        // else
-        //     std::cout << "Response: " << response.msg() << '\n';
+        if (controller.Failed())
+            std::cerr << "Request failed: " << controller.ErrorText().c_str();
+        else
+            std::cout << "Response: " << response.msg() << '\n';
     }
     profiler.End();
 

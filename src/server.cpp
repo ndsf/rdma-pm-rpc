@@ -27,9 +27,7 @@ namespace rdmarpc
 
     void Server::Start(const std::string &ip, int port)
     {
-        _shutdown = false;
-
-        while (!_shutdown)
+        while (true)
         {
             auto context = std::make_unique<infinity::core::Context>();
             auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context.get());
@@ -58,10 +56,5 @@ namespace rdmarpc
 //            delete bufferToReadWrite;
 //            delete bufferToReceive; it's detached, can't delete here
         }
-    }
-
-    bool Server::Shutdown() const
-    {
-        return this->_shutdown;
     }
 } // namespace rdmarpc

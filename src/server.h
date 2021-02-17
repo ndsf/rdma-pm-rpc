@@ -28,15 +28,11 @@ namespace rdmarpc {
 
         void Start(const std::string &ip, int port);
 
-        bool Shutdown() const;
-
-
         // service_name -> {Service*, ServiceDescriptor*, MethodDescriptor* []}
         std::map<std::string, ServiceInfo> _services;
 
-    private:
-        bool _shutdown;
-        std::unique_ptr<infinity::core::Context> _context;
+    // private:
+        // std::unique_ptr<infinity::core::Context> _context;
     }; //Server
 } // rdmarpc
 
