@@ -42,14 +42,14 @@ namespace rdmarpc
         dbx1000::Profiler profiler_callmethod;
         profiler_callmethod.Start();
         // request 原始数据
-        std::string request_data = request->SerializeAsString();
+        auto request_data = request->SerializeAsString();
         rdmarpc::RpcMeta rpc_meta;
         rpc_meta.set_service_name(method->service()->name());
         rpc_meta.set_method_name(method->name());
         rpc_meta.set_data_size(request_data.size());
-        std::string meta_data = rpc_meta.SerializeAsString();
+        auto meta_data = rpc_meta.SerializeAsString();
 
-        size_t meta_size = meta_data.size();
+        auto meta_size = meta_data.size();
         meta_data.insert(0, std::string((const char *)&meta_size, sizeof(size_t)));
         meta_data += request_data;
 
@@ -86,10 +86,9 @@ namespace rdmarpc
         infinity::core::receive_element_t receiveElement;
         while (!context_->receive(&receiveElement))
             ;
-        // std::cout << "Received 89: " << std::string((char*)receiveElement.buffer->getData() + sizeof(size_t), *(size_t*)receiveElement.buffer->getData()) << std::endl;
 
         // response size
-        size_t len = *(size_t *)receiveElement.buffer->getData();
+        auto len = *(size_t *)receiveElement.buffer->getData();
         // response data
         response->ParseFromString(std::string((char *)receiveElement.buffer->getData() + sizeof(size_t), len));
         profiler_wait_rsponse.End();
