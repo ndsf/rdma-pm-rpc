@@ -8,7 +8,6 @@
 #include <infinity/queues/QueuePairFactory.h>
 
 #include "runnable.h"
-// #include "unique_ptr.h"
 
 namespace rdmarpc
 {
@@ -25,26 +24,23 @@ namespace rdmarpc
         _services[service_info.sd->name()] = service_info;
     }
 
-    void Server::Start(const std::string &ip, int port)
+    void Server::Start()
     {
         while (true)
         {
             auto context = std::make_unique<infinity::core::Context>();
             auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context.get());
-            qpFactory->bindToPort(port);
+            qpFactory->bindToPort(port_);
 
-            printf("Creating buffers to read from and write to\n");
             auto bufferToReadWrite = std::make_unique<infinity::memory::Buffer>(context.get(), 16384 * sizeof(char));
-
             auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToReadWrite->createRegionToken(), sizeof(infinity::memory::RegionToken)));
 
             Runnable runnable(*this);
-            // runnable.server_ = *this;
             runnable.context_ = std::move(context);
             runnable.qp_ = std::move(qp);
             std::thread server_th(std::move(runnable));
             server_th.detach();
-            
+
             printf("Server_th detached\n");
         }
     }

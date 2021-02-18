@@ -24,15 +24,13 @@ namespace rdmarpc {
         }; //ServiceInfo
 
     public:
+        int port_;
+        Server(int port = 6688): port_(port) {};
         void RegisterService(::google::protobuf::Service *service);
-
-        void Start(const std::string &ip, int port);
+        void Start();
 
         // service_name -> {Service*, ServiceDescriptor*, MethodDescriptor* []}
         std::map<std::string, ServiceInfo> _services;
-
-    // private:
-        // std::unique_ptr<infinity::core::Context> context_;
     }; //Server
 } // rdmarpc
 

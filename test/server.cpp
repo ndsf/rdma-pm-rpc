@@ -9,9 +9,9 @@ class MyEchoService : public echo::EchoService
 {
 public:
   void Echo(::google::protobuf::RpcController *controller,
-                    const ::echo::EchoRequest *request,
-                    ::echo::EchoResponse *response,
-                    ::google::protobuf::Closure *done) override
+            const ::echo::EchoRequest *request,
+            ::echo::EchoResponse *response,
+            ::google::protobuf::Closure *done) override
   {
     std::cout << "Server received client msg: " << request->msg() << ", wait for 1s...\n";
 
@@ -32,7 +32,7 @@ int main()
   rdmarpc::Server my_server;
   MyEchoService echo_service;
   my_server.RegisterService(&echo_service);
-  my_server.Start("127.0.0.1", 6688);
+  my_server.Start();
 
   return 0;
 }
