@@ -41,7 +41,7 @@ namespace rdmarpc
             std::thread server_th(std::move(runnable));
             server_th.detach();
 
-            printf("Server_th detached\n");
+            // printf("Server_th detached\n");
         }
     }
 } // namespace rdmarpc
