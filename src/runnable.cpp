@@ -9,12 +9,12 @@
 
 namespace rdmarpc
 {
-    Runnable::Runnable() {
-        std::cout << "init\n";
-        // bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
-        // context_->postReceiveBuffer(bufferToReceive_);
-        //先init之后才设置context_
-    }
+    // Runnable::Runnable() {
+    //     std::cout << "init\n";
+    //     // bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
+    //     // context_->postReceiveBuffer(bufferToReceive_);
+    //     //先init之后才设置context_
+    // }
     void Runnable::operator()()
     {
         //requestBuffer_.reset(new infinity::memory::Buffer(context_.get(), 16384 * 2));
@@ -39,8 +39,8 @@ namespace rdmarpc
 
             std::string request_str{(char *)receiveElement.buffer->getData() + sizeof(size_t) + meta_len, meta.data_size()};
             // 接收完消息后
-            auto service = server_->_services[meta.service_name()].service;
-            auto md = server_->_services[meta.service_name()].mds[meta.method_name()];
+            auto service = server_._services[meta.service_name()].service;
+            auto md = server_._services[meta.service_name()].mds[meta.method_name()];
 
             // recv_msg 可以再 CallMethod 后立即删除
             auto recv_msg = service->GetRequestPrototype(md).New();

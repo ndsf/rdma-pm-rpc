@@ -20,7 +20,7 @@ namespace rdmarpc {
     
     class Runnable {
     public:
-        explicit Runnable();
+        explicit Runnable(Server& server): server_(server) {};
     public:
         /** Method to execute the callable
         @param[in]	f		Callable object
@@ -30,7 +30,7 @@ namespace rdmarpc {
         void operator()();
 
 //    private:
-        Server *server_;
+        Server& server_;
         infinity::memory::Buffer *bufferToReceive_;
         std::unique_ptr<infinity::core::Context> context_;
         std::unique_ptr<infinity::queues::QueuePair> qp_;

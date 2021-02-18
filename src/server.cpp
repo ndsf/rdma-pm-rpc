@@ -38,8 +38,8 @@ namespace rdmarpc
 
             auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToReadWrite->createRegionToken(), sizeof(infinity::memory::RegionToken)));
 
-            Runnable runnable;
-            runnable.server_ = this;
+            Runnable runnable(*this);
+            // runnable.server_ = *this;
             runnable.context_ = std::move(context);
             runnable.qp_ = std::move(qp);
             std::thread server_th(std::move(runnable));
