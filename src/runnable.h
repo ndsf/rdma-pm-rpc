@@ -5,6 +5,7 @@
 #ifndef RDMA_RUNNABLE_H
 #define RDMA_RUNNABLE_H
 
+#include <iostream>
 
 #include <infinity/core/Context.h>
 #include <infinity/queues/QueuePair.h>
@@ -30,11 +31,12 @@ namespace rdmarpc {
 
 //    private:
         Server *server_;
-        std::unique_ptr<infinity::core::Context> _context;
-        std::unique_ptr<infinity::queues::QueuePair> _qp;
-        std::unique_ptr<infinity::memory::Buffer> requestBuffer_;
-        // infinity::core::Context *_context;
-        // infinity::queues::QueuePair *_qp;
+        infinity::memory::Buffer *bufferToReceive_;
+        std::unique_ptr<infinity::core::Context> context_;
+        std::unique_ptr<infinity::queues::QueuePair> qp_;
+        // std::unique_ptr<infinity::memory::Buffer> requestBuffer_;
+        // infinity::core::Context *context_;
+        // infinity::queues::QueuePair *qp_;
         // infinity::memory::Buffer *requestBuffer_;
 
     };

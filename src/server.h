@@ -32,7 +32,7 @@ namespace rdmarpc {
         std::map<std::string, ServiceInfo> _services;
 
     // private:
-        // std::unique_ptr<infinity::core::Context> _context;
+        // std::unique_ptr<infinity::core::Context> context_;
     }; //Server
 } // rdmarpc
 

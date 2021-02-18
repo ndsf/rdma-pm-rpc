@@ -31,30 +31,21 @@ namespace rdmarpc
         {
             auto context = std::make_unique<infinity::core::Context>();
             auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context.get());
-            // printf("Setting up connection (blocking)\n");
             qpFactory->bindToPort(port);
 
             printf("Creating buffers to read from and write to\n");
-            // auto *bufferToReadWrite = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
             auto bufferToReadWrite = std::make_unique<infinity::memory::Buffer>(context.get(), 16384 * sizeof(char));
-            // infinity::memory::RegionToken *bufferToken = bufferToReadWrite->createRegionToken();
-
-            printf("Creating buffers to receive a message\n");
-            auto *bufferToReceive = new infinity::memory::Buffer(context.get(), 16384 * sizeof(char));
-            context->postReceiveBuffer(bufferToReceive);
 
             auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToReadWrite->createRegionToken(), sizeof(infinity::memory::RegionToken)));
 
             Runnable runnable;
             runnable.server_ = this;
-            runnable._context = std::move(context);
-            runnable._qp = std::move(qp);
+            runnable.context_ = std::move(context);
+            runnable.qp_ = std::move(qp);
             std::thread server_th(std::move(runnable));
             server_th.detach();
             
             printf("Server_th detached\n");
-//            delete bufferToReadWrite;
-//            delete bufferToReceive; it's detached, can't delete here
         }
     }
 } // namespace rdmarpc

@@ -16,15 +16,15 @@ namespace rdmarpc
 {
     Channel::Channel(const std::string &ip, int port)
     {
-        _context = std::make_unique<infinity::core::Context>();
-        auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(_context.get());
+        context_ = std::make_unique<infinity::core::Context>();
+        auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context_.get());
         printf("Channel connecting to remote node\n");
-        _qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->connectToRemoteHost(ip.data(), port));
+        qp_ = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->connectToRemoteHost(ip.data(), port));
         printf("Creating buffers\n");
 
         bufferSize_ = 1024;
-        _responseBuffer = std::make_unique<infinity::memory::Buffer>(_context.get(), bufferSize_);
-        _context->postReceiveBuffer(_responseBuffer.get());
+        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
+        context_->postReceiveBuffer(responseBuffer_.get());
 
         time_wait_rsponse = 0;
         time_callmethod = 0;
@@ -66,13 +66,13 @@ namespace rdmarpc
 
         dbx1000::Profiler profiler_send1;
         profiler_send1.Start();
-        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(_context.get(), (void *)(meta_data.data()), meta_data.size());
+        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size());
         profiler_send1.End();
         time_send1 += profiler_send1.Micros();
         profiler_send2.Start();
-        _qp->send(requestBuffer.get(), _context->defaultRequestToken);
+        qp_->send(requestBuffer.get(), context_->defaultRequestToken);
 
-        _context->defaultRequestToken->waitUntilCompleted();
+        context_->defaultRequestToken->waitUntilCompleted();
 
         profiler_send2.End();
         time_send2 += profiler_send2.Micros();
@@ -84,7 +84,7 @@ namespace rdmarpc
         // 等待 server 回复
         // respone 格式为 [response size][response data]
         infinity::core::receive_element_t receiveElement;
-        while (!_context->receive(&receiveElement))
+        while (!context_->receive(&receiveElement))
             ;
         // std::cout << "Received 89: " << std::string((char*)receiveElement.buffer->getData() + sizeof(size_t), *(size_t*)receiveElement.buffer->getData()) << std::endl;
 
@@ -93,7 +93,7 @@ namespace rdmarpc
         // response data
         response->ParseFromString(std::string((char *)receiveElement.buffer->getData() + sizeof(size_t), len));
         profiler_wait_rsponse.End();
-        _context->postReceiveBuffer(_responseBuffer.get());
+        context_->postReceiveBuffer(responseBuffer_.get());
 
         time_wait_rsponse += profiler_wait_rsponse.Micros();
 

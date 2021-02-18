@@ -9,17 +9,26 @@
 
 namespace rdmarpc
 {
-    Runnable::Runnable() {}
+    Runnable::Runnable() {
+        std::cout << "init\n";
+        // bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
+        // context_->postReceiveBuffer(bufferToReceive_);
+        //先init之后才设置context_
+    }
     void Runnable::operator()()
     {
-        //requestBuffer_.reset(new infinity::memory::Buffer(_context.get(), 16384 * 2));
-        //_context->postReceiveBuffer(requestBuffer_.get());
+        //requestBuffer_.reset(new infinity::memory::Buffer(context_.get(), 16384 * 2));
+        //context_->postReceiveBuffer(requestBuffer_.get());
+        // printf("Creating buffers to receive a message\n");
+        bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
+        context_->postReceiveBuffer(bufferToReceive_);
+
         while (true)
         {
             infinity::core::receive_element_t receiveElement;
-            while (!_context->receive(&receiveElement))
+            while (!context_->receive(&receiveElement))
                 ;
-            _context->postReceiveBuffer(receiveElement.buffer);
+            context_->postReceiveBuffer(receiveElement.buffer);
 
             size_t meta_len = *(size_t *)receiveElement.buffer->getData();
 
@@ -51,8 +60,10 @@ namespace rdmarpc
             delete recv_msg;
 
             // 最后把 requestBuffer_ 放到 qp
-            // _context->postReceiveBuffer(requestBuffer_.get()); moved to top
+            // context_->postReceiveBuffer(requestBuffer_.get()); moved to top
         }
+        // delete bufferToReceive;
+        delete bufferToReceive_;
     }
 
     void OnCallDone::Run()
@@ -64,9 +75,9 @@ namespace rdmarpc
         resp_str.assign((const char *)&serialized_size, sizeof(serialized_size));
         resp_msg_->AppendToString(&resp_str);
 
-        auto responseBuffer = std::make_unique<infinity::memory::Buffer>(runnable_->_context.get(), (void *)(resp_str.data()), resp_str.size());
+        auto responseBuffer = std::make_unique<infinity::memory::Buffer>(runnable_->context_.get(), (void *)(resp_str.data()), resp_str.size());
         assert(resp_str.size() <= 16384 * 2);
-        runnable_->_qp->send(responseBuffer.get(), runnable_->_context->defaultRequestToken);
-        runnable_->_context->defaultRequestToken->waitUntilCompleted();
+        runnable_->qp_->send(responseBuffer.get(), runnable_->context_->defaultRequestToken);
+        runnable_->context_->defaultRequestToken->waitUntilCompleted();
     }
 } // namespace rdmarpc

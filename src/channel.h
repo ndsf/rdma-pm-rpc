@@ -26,9 +26,9 @@ namespace rdmarpc
                         ::google::protobuf::Closure *) override;
 
     private:
-        std::unique_ptr<infinity::core::Context> _context;
-        std::unique_ptr<infinity::queues::QueuePair> _qp;
-        std::unique_ptr<infinity::memory::Buffer> _responseBuffer;
+        std::unique_ptr<infinity::core::Context> context_;
+        std::unique_ptr<infinity::queues::QueuePair> qp_;
+        std::unique_ptr<infinity::memory::Buffer> responseBuffer_;
         size_t bufferSize_;
 
     public:
