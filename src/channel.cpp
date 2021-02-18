@@ -18,9 +18,9 @@ namespace rdmarpc
     {
         context_ = std::make_unique<infinity::core::Context>();
         auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context_.get());
-        printf("Channel connecting to remote node\n");
+        // printf("Channel connecting to remote node\n");
         qp_ = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->connectToRemoteHost(ip.data(), port));
-        printf("Creating buffers\n");
+        // printf("Creating buffers\n");
 
         bufferSize_ = 1024;
         responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
@@ -84,7 +84,7 @@ namespace rdmarpc
         // 等待 server 回复
         // respone 格式为 [response size][response data]
         infinity::core::receive_element_t receiveElement;
-        while (!context_->receive(&receiveElement))
+        while (!context_->receive(&receiveElement)) // STUCK HERE TODO
             ;
 
         // response size
