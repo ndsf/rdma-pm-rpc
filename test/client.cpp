@@ -6,26 +6,31 @@
 #include "proto/echo.pb.h"
 #include "profiler.h"
 
-constexpr size_t thread_count = 10;
-constexpr size_t request_count = 30;
-
+constexpr size_t thread_count = 1;
+constexpr size_t request_count = 10000;
+std::mutex mtx;
 class Runnable
 {
 public:
     Runnable(int id) : id_(id){};
     void operator()()
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(id_ * 50)); // can't create multi connections at the same time
-        echo::EchoResponse response;
+        // std::this_thread::sleep_for(std::chrono::milliseconds(id_ * 200)); // can't create multi connections at the same time
+        std::unique_lock lck {mtx};
+        // std::cout << "lock\n";
         rdmarpc::Channel channel("192.168.98.53", 6688);
+        
         echo::EchoService_Stub stub(&channel);
         rdmarpc::Controller controller;
+        // std::cout << "unlock\n";
+        lck.unlock();
 
         dbx1000::Profiler profiler;
         profiler.Start();
         for (auto i = 0; i < request_count; ++i)
         {
-            std::cout << id_ << '-' << i << '\n';
+            // std::cout << id_ << '-' << i << '\n';
+            echo::EchoResponse response;
             echo::EchoRequest request;
             request.set_msg(std::to_string(id_) + "-" + std::to_string(i));
 
@@ -40,6 +45,7 @@ public:
 
 private:
     int id_;
+    // static std::mutex mtx;
 };
 
 int main()

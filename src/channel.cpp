@@ -39,8 +39,8 @@ namespace rdmarpc
                              ::google::protobuf::Message *response,
                              ::google::protobuf::Closure *)
     {
-        dbx1000::Profiler profiler_callmethod;
-        profiler_callmethod.Start();
+        // dbx1000::Profiler profiler_callmethod;
+        // profiler_callmethod.Start();
         // request 原始数据
         auto request_data = request->SerializeAsString();
         rdmarpc::RpcMeta rpc_meta;
@@ -59,45 +59,45 @@ namespace rdmarpc
         // 最后发送的格式为 [meta_size][meta_data][request_data], meta_data = [sevice_name, method_name, request_data size]
         // printf("meta_data ready\n");
 
-        dbx1000::Profiler profiler_send;
-        profiler_send.Start();
+        // dbx1000::Profiler profiler_send;
+        // profiler_send.Start();
         assert(meta_data.size() <= bufferSize_);
-        dbx1000::Profiler profiler_send2;
+        // dbx1000::Profiler profiler_send2;
 
-        dbx1000::Profiler profiler_send1;
-        profiler_send1.Start();
+        // dbx1000::Profiler profiler_send1;
+        // profiler_send1.Start();
         auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size());
-        profiler_send1.End();
-        time_send1 += profiler_send1.Micros();
-        profiler_send2.Start();
+        // profiler_send1.End();
+        // time_send1 += profiler_send1.Micros();
+        // profiler_send2.Start();
         qp_->send(requestBuffer.get(), context_->defaultRequestToken);
 
         context_->defaultRequestToken->waitUntilCompleted();
 
-        profiler_send2.End();
-        time_send2 += profiler_send2.Micros();
-        profiler_send.End();
-        time_send += profiler_send.Micros();
+        // profiler_send2.End();
+        // time_send2 += profiler_send2.Micros();
+        // profiler_send.End();
+        // time_send += profiler_send.Micros();
 
-        dbx1000::Profiler profiler_wait_rsponse;
-        profiler_wait_rsponse.Start();
+        // dbx1000::Profiler profiler_wait_rsponse;
+        // profiler_wait_rsponse.Start();
         // 等待 server 回复
         // respone 格式为 [response size][response data]
         infinity::core::receive_element_t receiveElement;
-        while (!context_->receive(&receiveElement)) // STUCK HERE TODO
+        while (!context_->receive(&receiveElement))
             ;
 
         // response size
         auto len = *(size_t *)receiveElement.buffer->getData();
         // response data
         response->ParseFromString(std::string((char *)receiveElement.buffer->getData() + sizeof(size_t), len));
-        profiler_wait_rsponse.End();
+        // profiler_wait_rsponse.End();
         context_->postReceiveBuffer(responseBuffer_.get());
 
-        time_wait_rsponse += profiler_wait_rsponse.Micros();
+        // time_wait_rsponse += profiler_wait_rsponse.Micros();
 
-        profiler_callmethod.End();
-        time_callmethod += profiler_callmethod.Micros();
+        // profiler_callmethod.End();
+        // time_callmethod += profiler_callmethod.Micros();
     }
 
 } // namespace rdmarpc

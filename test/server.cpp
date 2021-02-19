@@ -2,8 +2,8 @@
 #include "../src/server.h"
 #include "proto/echo.pb.h"
 
-#include <chrono>
-#include <thread>
+// #include <chrono>
+// #include <thread>
 
 class MyEchoService : public echo::EchoService
 {
@@ -15,12 +15,12 @@ public:
   {
     // std::cout << "Server received client msg, waiting for 1s: " << request->msg() << '\n';
 
-    using namespace std::this_thread;     // sleep_for, sleep_until
-    using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
-    using std::chrono::system_clock;
+    // using namespace std::this_thread;     // sleep_for, sleep_until
+    // using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
+    // using std::chrono::system_clock;
 
-    sleep_for(10ns);
-    sleep_until(system_clock::now() + 1s);
+    // sleep_for(10ns);
+    // sleep_until(system_clock::now() + 1s);
 
     response->set_msg("server say: received msg: ***" + request->msg() + "***");
     done->Run();
