@@ -23,7 +23,7 @@ namespace rdmarpc
         // printf("Creating buffers\n");
 
         bufferSize_ = 1024;
-        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
+        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_, "/home/congyong/mnt/pmem1/responseBufferChannel", "hello_layout");
         context_->postReceiveBuffer(responseBuffer_.get());
 
         time_wait_rsponse = 0;
@@ -66,7 +66,7 @@ namespace rdmarpc
 
         // dbx1000::Profiler profiler_send1;
         // profiler_send1.Start();
-        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size());
+        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size(), "/home/congyong/mnt/pmem1/requestBufferChannel", "hello_layout");
         // profiler_send1.End();
         // time_send1 += profiler_send1.Micros();
         // profiler_send2.Start();
