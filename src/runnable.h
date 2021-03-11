@@ -18,13 +18,16 @@ namespace rdmarpc
     class Runnable
     {
     public:
-        explicit Runnable(Server &server) : server_(server) {};
+        explicit Runnable(Server &server) : server_(server) {count++;};
         void operator()();
 
         Server &server_;
         infinity::memory::Buffer *bufferToReceive_;
         std::unique_ptr<infinity::core::Context> context_;
         std::unique_ptr<infinity::queues::QueuePair> qp_;
+
+    private:
+        static int count;
     };
 
     class OnCallDone : public google::protobuf::Closure
@@ -32,7 +35,7 @@ namespace rdmarpc
     public:
         OnCallDone(
             ::google::protobuf::Message *resp_msg, Controller *controller)
-            : resp_msg_(resp_msg), controller_(controller) {}
+            : resp_msg_(resp_msg), controller_(controller) {count++;}
 
         ~OnCallDone() override
         {
@@ -45,6 +48,8 @@ namespace rdmarpc
         Controller *controller_;
 
         Runnable *runnable_{};
+    private:
+        static int count;
     };
 }
 

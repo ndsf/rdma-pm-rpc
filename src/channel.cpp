@@ -14,7 +14,9 @@
 
 namespace rdmarpc
 {
-    Channel::Channel(const std::string &ip, int port)
+    int Channel::count = 0;
+
+    Channel::Channel(const std::string &ip, int port, int id)
     {
         context_ = std::make_unique<infinity::core::Context>();
         auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context_.get());
@@ -23,7 +25,7 @@ namespace rdmarpc
         // printf("Creating buffers\n");
 
         bufferSize_ = 1024;
-        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_, "/home/congyong/mnt/pmem1/responseBufferChannel", "hello_layout");
+        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_, "/home/congyong/mnt/pmem1/responseBufferChannel" + std::to_string(id) + "_" + std::to_string(count), "hello_layout");
         context_->postReceiveBuffer(responseBuffer_.get());
 
         time_wait_rsponse = 0;
@@ -31,6 +33,9 @@ namespace rdmarpc
         time_send = 0;
         time_send1 = 0;
         time_send2 = 0;
+
+        count++;
+        id_ = id;
     }
 
     void Channel::CallMethod(const ::google::protobuf::MethodDescriptor *method,
@@ -66,7 +71,7 @@ namespace rdmarpc
 
         // dbx1000::Profiler profiler_send1;
         // profiler_send1.Start();
-        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size(), "/home/congyong/mnt/pmem1/requestBufferChannel", "hello_layout");
+        auto requestBuffer = std::make_unique<infinity::memory::Buffer>(context_.get(), (void *)(meta_data.data()), meta_data.size(), "/home/congyong/mnt/pmem1/requestBufferChannel" + std::to_string(id_) + "_" + std::to_string(count), "hello_layout");
         // profiler_send1.End();
         // time_send1 += profiler_send1.Micros();
         // profiler_send2.Start();

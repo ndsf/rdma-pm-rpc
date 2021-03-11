@@ -26,6 +26,7 @@ namespace rdmarpc
 
     void Server::Start()
     {
+        int count = 0;
         while (true)
         {
             auto context = std::make_unique<infinity::core::Context>();
@@ -33,7 +34,7 @@ namespace rdmarpc
             // std::this_thread::sleep_for(std::chrono::seconds(5));
             qpFactory->bindToPort(port_); // TODO TOO LATE MULTI THREAD
 
-            auto bufferToReadWrite = std::make_unique<infinity::memory::Buffer>(context.get(), 16384 * sizeof(char), "/home/congyong/mnt/pmem1/bufferToReadWriteServer", "hello_layout");
+            auto bufferToReadWrite = std::make_unique<infinity::memory::Buffer>(context.get(), 16384 * sizeof(char), "/home/congyong/mnt/pmem1/bufferToReadWriteServer" + std::to_string(count), "hello_layout");
             auto qp = std::unique_ptr<infinity::queues::QueuePair>(qpFactory->acceptIncomingConnection(bufferToReadWrite->createRegionToken(), sizeof(infinity::memory::RegionToken)));
 
             Runnable runnable(*this);

@@ -9,6 +9,8 @@
 
 namespace rdmarpc
 {
+    int Runnable::count = 0;
+    int OnCallDone::count = 0;
     // Runnable::Runnable() {
     //     std::cout << "init\n";
     //     // bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
@@ -20,7 +22,7 @@ namespace rdmarpc
         //requestBuffer_.reset(new infinity::memory::Buffer(context_.get(), 16384 * 2));
         //context_->postReceiveBuffer(requestBuffer_.get());
         // printf("Creating buffers to receive a message\n");
-        bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char), "/home/congyong/mnt/pmem1/bufferToReceiveRunnable", "hello_layout");
+        bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char), "/home/congyong/mnt/pmem1/bufferToReceiveRunnable" + std::to_string(count), "hello_layout");
         context_->postReceiveBuffer(bufferToReceive_);
 
         while (true)
@@ -75,7 +77,7 @@ namespace rdmarpc
         resp_str.assign((const char *)&serialized_size, sizeof(serialized_size));
         resp_msg_->AppendToString(&resp_str);
 
-        auto responseBuffer = std::make_unique<infinity::memory::Buffer>(runnable_->context_.get(), (void *)(resp_str.data()), resp_str.size(), "/home/congyong/mnt/pmem1/responseBufferRunnable", "hello_layout");
+        auto responseBuffer = std::make_unique<infinity::memory::Buffer>(runnable_->context_.get(), (void *)(resp_str.data()), resp_str.size(), "/home/congyong/mnt/pmem1/responseBufferRunnable" + std::to_string(count), "hello_layout");
         assert(resp_str.size() <= 16384 * 2);
         runnable_->qp_->send(responseBuffer.get(), runnable_->context_->defaultRequestToken);
         runnable_->context_->defaultRequestToken->waitUntilCompleted();
