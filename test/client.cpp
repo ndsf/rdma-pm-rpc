@@ -6,19 +6,21 @@
 #include "proto/echo.pb.h"
 #include "profiler.h"
 
-constexpr size_t thread_count = 10;
-constexpr size_t request_count = 10000;
+#include <libvmem.h>
+
+constexpr size_t thread_count = 1;
+constexpr size_t request_count = 1000;
 std::mutex mtx;
 class Runnable
 {
 public:
-    Runnable(int id) : id_(id){};
+    Runnable(int id, VMEM *vmp) : id_(id), vmp(vmp) {};
     void operator()()
     {
         // std::this_thread::sleep_for(std::chrono::milliseconds(id_ * 200)); // can't create multi connections at the same time
         std::unique_lock lck {mtx};
         // std::cout << "lock\n";
-        rdmarpc::Channel channel("192.168.98.50", 6688);
+        rdmarpc::Channel channel("192.168.98.50", 6688, vmp);
         
         echo::EchoService_Stub stub(&channel);
         rdmarpc::Controller controller;
@@ -45,17 +47,27 @@ public:
 
 private:
     int id_;
+    VMEM *vmp;
     // static std::mutex mtx;
 };
 
 int main()
 {
+
+	VMEM *vmp;
+
+	/* create minimum size pool of memory */
+	if ((vmp = vmem_create("/home/congyong/mnt/pmem1", (size_t)(1024 * 1024 * 1024))) == NULL) {
+		perror("vmem_create");
+		exit(1);
+	}
+
     std::vector<std::thread> vector_;
     vector_.resize(thread_count);
     for (auto i = 0; i < thread_count; ++i)
     {
         // vector_[i] = std::thread(fun, i);
-        Runnable runnable(i);
+        Runnable runnable(i, vmp);
         vector_[i] = std::thread(std::move(runnable));
     }
 
@@ -70,6 +82,6 @@ int main()
     // std::cout << "send1     :   " << channel.time_send1 << "us\n";
     // std::cout << "send2     :   " << channel.time_send2 << "us\n";
     // std::cout << "wait_response: " << channel.time_wait_rsponse << "us\n";
-
+    vmem_delete(vmp);
     return 0;
 }

@@ -14,6 +14,7 @@
 
 #include <infinity/core/Context.h>
 #include <infinity/memory/RegionType.h>
+#include <libvmem.h>
 
 namespace infinity {
 namespace memory {
@@ -50,6 +51,8 @@ protected:
 
 	void * data;
 	uint64_t sizeInBytes;
+
+	VMEM *vmp;
 
 };
 

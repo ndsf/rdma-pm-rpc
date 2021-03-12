@@ -22,10 +22,12 @@ namespace rdmarpc {
             const ::google::protobuf::ServiceDescriptor *sd;
             std::map<std::string, const ::google::protobuf::MethodDescriptor *> mds;
         }; //ServiceInfo
+        
 
     public:
         int port_;
-        Server(int port = 6688): port_(port) {};
+        VMEM *vmp;
+        Server(VMEM *vmp, int port = 6688): port_(port), vmp(vmp) {};
         void RegisterService(::google::protobuf::Service *service);
         void Start();
 

@@ -20,7 +20,7 @@ namespace rdmarpc
         //requestBuffer_.reset(new infinity::memory::Buffer(context_.get(), 16384 * 2));
         //context_->postReceiveBuffer(requestBuffer_.get());
         // printf("Creating buffers to receive a message\n");
-        bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char));
+        bufferToReceive_ = new infinity::memory::Buffer(context_.get(), 16384 * sizeof(char), server_.vmp);
         context_->postReceiveBuffer(bufferToReceive_);
 
         while (true)

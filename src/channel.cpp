@@ -14,7 +14,7 @@
 
 namespace rdmarpc
 {
-    Channel::Channel(const std::string &ip, int port)
+    Channel::Channel(const std::string &ip, int port, VMEM *vmp): vmp(vmp)
     {
         context_ = std::make_unique<infinity::core::Context>();
         auto qpFactory = std::make_unique<infinity::queues::QueuePairFactory>(context_.get());
@@ -23,7 +23,7 @@ namespace rdmarpc
         // printf("Creating buffers\n");
 
         bufferSize_ = 1024;
-        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_);
+        responseBuffer_ = std::make_unique<infinity::memory::Buffer>(context_.get(), bufferSize_, vmp);
         context_->postReceiveBuffer(responseBuffer_.get());
 
         time_wait_rsponse = 0;

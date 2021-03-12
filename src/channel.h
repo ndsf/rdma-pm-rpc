@@ -11,13 +11,15 @@
 #include <infinity/queues/QueuePair.h>
 #include <infinity/memory/Buffer.h>
 
+#include <libvmem.h>
+
 namespace rdmarpc
 {
 
     class Channel : public ::google::protobuf::RpcChannel
     {
     public:
-        Channel(const std::string &ip, int port);
+        Channel(const std::string &ip, int port, VMEM *vmp);
 
         void CallMethod(const ::google::protobuf::MethodDescriptor *method,
                         ::google::protobuf::RpcController * /* controller */,
@@ -30,6 +32,7 @@ namespace rdmarpc
         std::unique_ptr<infinity::queues::QueuePair> qp_;
         std::unique_ptr<infinity::memory::Buffer> responseBuffer_;
         size_t bufferSize_;
+        VMEM *vmp;
 
     public:
         uint64_t time_wait_rsponse;

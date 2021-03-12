@@ -4,6 +4,7 @@
 
 // #include <chrono>
 // #include <thread>
+#include <libvmem.h>
 
 class MyEchoService : public echo::EchoService
 {
@@ -29,10 +30,20 @@ public:
 
 int main()
 {
-  rdmarpc::Server my_server;
+
+  VMEM *vmp;
+
+	/* create minimum size pool of memory */
+	if ((vmp = vmem_create("/home/congyong/mnt/pmem1", (size_t)(1024 * 1024 * 1024))) == NULL) {
+		perror("vmem_create");
+		exit(1);
+	}
+
+  rdmarpc::Server my_server(vmp);
   MyEchoService echo_service;
   my_server.RegisterService(&echo_service);
   my_server.Start();
-
+  
+  vmem_delete(vmp);
   return 0;
 }
