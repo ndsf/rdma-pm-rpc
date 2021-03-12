@@ -6,7 +6,7 @@
 #include "proto/echo.pb.h"
 #include "profiler.h"
 
-constexpr size_t thread_count = 1;
+constexpr size_t thread_count = 10;
 constexpr size_t request_count = 10000;
 std::mutex mtx;
 class Runnable
@@ -18,7 +18,7 @@ public:
         // std::this_thread::sleep_for(std::chrono::milliseconds(id_ * 200)); // can't create multi connections at the same time
         std::unique_lock lck {mtx};
         // std::cout << "lock\n";
-        rdmarpc::Channel channel("192.168.98.53", 6688);
+        rdmarpc::Channel channel("192.168.98.50", 6688);
         
         echo::EchoService_Stub stub(&channel);
         rdmarpc::Controller controller;
