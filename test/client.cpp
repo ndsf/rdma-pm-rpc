@@ -8,13 +8,14 @@
 
 #include <libvmem.h>
 
-constexpr size_t thread_count = 1;
-constexpr size_t request_count = 1000;
+constexpr size_t thread_count = 10;
+constexpr size_t request_count = 300000;
 std::mutex mtx;
+VMEM *vmp;
 class Runnable
 {
 public:
-    Runnable(int id, VMEM *vmp) : id_(id), vmp(vmp) {};
+    Runnable(int id) : id_(id) {};
     void operator()()
     {
         // std::this_thread::sleep_for(std::chrono::milliseconds(id_ * 200)); // can't create multi connections at the same time
@@ -37,25 +38,24 @@ public:
             request.set_msg(std::to_string(id_) + "-" + std::to_string(i));
 
             stub.Echo(&controller, &request, &response, nullptr);
-            // if (controller.Failed())
-            //     std::cerr << "Request failed: " << controller.ErrorText().c_str();
-            // else
-            // std::cout << id << '-' << i << ':' << "Response: " << response.msg() << '\n';
+
+            #ifdef DELAY
+            if (controller.Failed())
+                std::cerr << "Request failed: " << controller.ErrorText().c_str();
+            else
+                std::cout << id_ << '-' << i << ':' << "Response: " << response.msg() << '\n';
+            #endif
         }
         profiler.End();
     };
 
 private:
     int id_;
-    VMEM *vmp;
     // static std::mutex mtx;
 };
 
 int main()
 {
-
-	VMEM *vmp;
-
 	/* create minimum size pool of memory */
 	if ((vmp = vmem_create("/home/congyong/mnt/pmem1", (size_t)(1024 * 1024 * 1024))) == NULL) {
 		perror("vmem_create");
@@ -67,7 +67,7 @@ int main()
     for (auto i = 0; i < thread_count; ++i)
     {
         // vector_[i] = std::thread(fun, i);
-        Runnable runnable(i, vmp);
+        Runnable runnable(i);
         vector_[i] = std::thread(std::move(runnable));
     }
 
